@@ -15,25 +15,31 @@ babysitting every screen.
   with stages you can already auto-battle, or stages where you only need
   help clicking through the surrounding menus.
 
-## Install
+## Get it
 
+**Option A — download the exe (Windows, no Python needed)**
+Every push to `main` auto-builds `BleachAutoFarm.exe` via GitHub Actions.
+Go to the repo's **Actions** tab → latest **Build Windows EXE** run →
+download the `BleachAutoFarm-windows-exe` artifact, unzip it, and run
+`BleachAutoFarm.exe`. Windows SmartScreen may warn about an unsigned exe
+from an unknown publisher — click "More info" → "Run anyway" if you trust
+the source (you built it yourself via your own repo's Actions run).
+
+**Option B — run from source**
 ```bash
 git clone https://github.com/<your-username>/bleach-autofarm.git
 cd bleach-autofarm
 pip install -r requirements.txt
+python run_gui.py          # GUI
+python run_cli.py          # headless CLI alternative
 ```
 
-## Run
-
-GUI (recommended):
-```bash
-python run_gui.py
+**Option C — build the exe yourself locally**
+On Windows, inside the repo folder:
+```bat
+build.bat
 ```
-
-Headless / CLI:
-```bash
-python run_cli.py
-```
+This installs PyInstaller and produces `dist\BleachAutoFarm.exe`.
 
 With the game running, click **Start**. The status dot goes green while
 running. **Pause** freezes it in place, **Stop** ends the session. You can
@@ -58,6 +64,9 @@ bleach-autofarm/
 ├── templates/        # cropped reference button images
 ├── run_gui.py
 ├── run_cli.py
+├── build_exe.spec    # PyInstaller build config
+├── build.bat          # local Windows build script
+├── .github/workflows/build-exe.yml   # auto-builds the exe on push
 └── requirements.txt
 ```
 
