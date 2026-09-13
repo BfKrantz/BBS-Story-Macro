@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build and Release Windows EXE
 
 on:
   push:
@@ -6,6 +6,9 @@ on:
     paths-ignore:
       - '**.md'
   workflow_dispatch: {}
+
+permissions:
+  contents: write   # needed to create/update releases
 
 jobs:
   build:
@@ -28,9 +31,22 @@ jobs:
       - name: Build EXE
         run: pyinstaller --noconfirm build_exe.spec
 
-      - name: Upload EXE artifact
+      - name: Upload build artifact (backup / per-run download)
         uses: actions/upload-artifact@v4
         with:
           name: BleachAutoFarm-windows-exe
           path: dist/BleachAutoFarm.exe
           retention-days: 30
+
+      - name: Publish "latest" GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest build
+          body: |
+            Auto-built from commit ${{ github.sha }}.
+            Download `BleachAutoFarm.exe` below and run it with the game open.
+          make_latest: true
+          files: dist/BleachAutoFarm.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
