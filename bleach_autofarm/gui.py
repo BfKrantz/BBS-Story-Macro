@@ -7,7 +7,7 @@ import queue
 import tkinter as tk
 from tkinter import scrolledtext, ttk
 
-from .core import AutoFarmer
+from .core import AutoFarmer, ASSETS_DIR
 
 STATUS_COLORS = {
     "stopped": "#b0413e",
@@ -22,6 +22,7 @@ class App:
         root.title("Bleach: Brave Souls - Auto Farm")
         root.geometry("620x420")
         root.minsize(480, 320)
+        self._set_window_icon()
 
         self.log_queue = queue.Queue()
         self.farmer = AutoFarmer(
@@ -34,6 +35,16 @@ class App:
         self._build_widgets()
         self.root.after(100, self._drain_log_queue)
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
+
+    def _set_window_icon(self):
+        icon_path = ASSETS_DIR / "icon.png"
+        if icon_path.exists():
+            try:
+                img = tk.PhotoImage(file=str(icon_path))
+                self.root.iconphoto(True, img)
+                self._icon_ref = img  # keep a reference so it isn't garbage-collected
+            except Exception:
+                pass
 
     def _build_widgets(self):
         top = ttk.Frame(self.root, padding=10)

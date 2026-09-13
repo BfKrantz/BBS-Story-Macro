@@ -3,6 +3,7 @@ Core screen-watching / clicking engine, shared by the GUI and CLI front ends.
 """
 
 import random
+import sys
 import threading
 import time
 from pathlib import Path
@@ -18,7 +19,16 @@ except ImportError:
     gw = None
 
 
-TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
+def _base_path():
+    """Resolve the app's base directory, whether running from source or
+    as a PyInstaller-frozen .exe (where files live under sys._MEIPASS)."""
+    if getattr(sys, "frozen", False):
+        return Path(sys._MEIPASS)
+    return Path(__file__).parent.parent
+
+
+TEMPLATES_DIR = _base_path() / "templates"
+ASSETS_DIR = _base_path() / "assets"
 
 CLICK_PRIORITY = [
     {"name": "skip",               "file": "skip_template.png",               "threshold": 0.85},

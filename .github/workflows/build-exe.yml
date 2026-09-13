@@ -31,6 +31,13 @@ jobs:
       - name: Build EXE
         run: pyinstaller --noconfirm build_exe.spec
 
+      - name: Read app version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(python -c "import bleach_autofarm; print(bleach_autofarm.__version__)")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Upload build artifact (backup / per-run download)
         uses: actions/upload-artifact@v4
         with:
@@ -42,7 +49,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: Latest build
+          name: Bleach Brave Souls Autofarm v${{ steps.version.outputs.version }}
           body: |
             Auto-built from commit ${{ github.sha }}.
             Download `BleachAutoFarm.exe` below and run it with the game open.
